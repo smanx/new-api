@@ -13,3 +13,4 @@ var UsingMySQL = false
 var UsingClickHouse = false
 
 var SQLitePath = "one-api.db?_busy_timeout=30000"
+var LogSQLitePath = "one-api-log.db?_busy_timeout=30000"

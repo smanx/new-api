@@ -64,6 +64,9 @@ func InitEnv() {
 	if os.Getenv("SQLITE_PATH") != "" {
 		SQLitePath = os.Getenv("SQLITE_PATH")
 	}
+	if os.Getenv("LOG_SQLITE_PATH") != "" {
+		LogSQLitePath = os.Getenv("LOG_SQLITE_PATH")
+	}
 	if *LogDir != "" {
 		var err error
 		*LogDir, err = filepath.Abs(*LogDir)

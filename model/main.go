@@ -136,14 +136,24 @@ func chooseDB(envName string, isLog bool) (*gorm.DB, error) {
 				PrepareStmt: true, // precompile SQL
 			})
 		}
-		if strings.HasPrefix(dsn, "local") {
-			common.SysLog("SQL_DSN not set, using SQLite as database")
+		if strings.HasPrefix(dsn, "local") || strings.HasSuffix(dsn, ".db") || strings.Contains(dsn, ".db?") {
+			common.SysLog("using SQLite as database")
 			if !isLog {
 				common.UsingSQLite = true
 			} else {
 				common.LogSqlType = common.DatabaseTypeSQLite
 			}
-			return gorm.Open(sqlite.Open(common.SQLitePath), &gorm.Config{
+			var sqlitePath string
+			if strings.HasPrefix(dsn, "local") {
+				if isLog {
+					sqlitePath = common.LogSQLitePath
+				} else {
+					sqlitePath = common.SQLitePath
+				}
+			} else {
+				sqlitePath = dsn
+			}
+			return gorm.Open(sqlite.Open(sqlitePath), &gorm.Config{
 				PrepareStmt: true, // precompile SQL
 			})
 		}
@@ -263,7 +273,6 @@ func migrateDB() error {
 		&Option{},
 		&Redemption{},
 		&Ability{},
-		&Log{},
 		&Midjourney{},
 		&TopUp{},
 		&QuotaData{},
@@ -311,7 +320,6 @@ func migrateDBFast() error {
 		{&Option{}, "Option"},
 		{&Redemption{}, "Redemption"},
 		{&Ability{}, "Ability"},
-		{&Log{}, "Log"},
 		{&Midjourney{}, "Midjourney"},
 		{&TopUp{}, "TopUp"},
 		{&QuotaData{}, "QuotaData"},
